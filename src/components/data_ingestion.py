@@ -8,8 +8,8 @@ from src.logger.logger import logging
 
 from src.entity.config_entity import DataIngestionConfig
 from sklearn.model_selection import train_test_split
+from src.constants import TRAIN_SIZE
 
-TRAIN_SIZE = 0.8
 
 class DataIngestion:
     def __init__(self,input_path):

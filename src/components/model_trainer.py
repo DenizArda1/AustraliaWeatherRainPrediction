@@ -8,7 +8,7 @@ from src.logger.logger import logging
 from src.utils.utils import get_models_and_params,save_obj
 from src.entity.config_entity import ModelTrainingConfig
 from sklearn.metrics import accuracy_score,classification_report
-from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 
 
 class ModelTrainer:

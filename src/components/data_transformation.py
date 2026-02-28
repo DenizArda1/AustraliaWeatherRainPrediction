@@ -2,8 +2,8 @@ import os
 import sys
 import pandas as pd
 import numpy as np
-from sklearn.impute import SimpleImputer
 
+from src.constants import TARGET_COLUMN
 from src.exception.exception import CustomException
 from src.logger.logger import logging
 from src.utils.utils import save_obj,save_numpy_arr_data
@@ -13,7 +13,6 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 
-TARGET_COLUMN = "RainTomorrow"
 
 class DataTransformation:
     def __init__(self,train_data_path,test_data_path):
