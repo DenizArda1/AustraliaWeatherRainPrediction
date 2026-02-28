@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australia Rain Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; padding-top: 20px; }
+        .card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px; }
+        .result-box { font-size: 24px; font-weight: bold; border-radius: 8px; padding: 15px; text-align: center; }
+        .rain-yes { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .rain-no { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h2 class="text-center mb-4">🦘 Australia Rain Prediction System</h2>
+
+            {% if results %}
+                <div class="result-box mb-4 {% if 'Yes' in results %} rain-yes {% else %} rain-no {% endif %}">
+                    {{ results }}
+                </div>
+            {% endif %}
+
+            <div class="card p-4 mb-5">
+                <form action="/" method="post">
+
+                    <h5 class="mb-3 text-primary">Date and Location</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Date</label>
+                            <input class="form-control" type="date" name="Date" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Location</label>
+                            <select class="form-control" name="Location" required>
+                                <option value="Sydney">Sydney</option>
+                                <option value="Melbourne">Melbourne</option>
+                                <option value="Brisbane">Brisbane</option>
+                                <option value="Perth">Perth</option>
+                                <option value="Adelaide">Adelaide</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Did it rain today?</label>
+                            <select class="form-control" name="RainToday" required>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3 text-primary">Temperature and Humidity</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Min Temp (°C)</label>
+                            <input class="form-control" type="number" name="MinTemp" step="0.1" min="-15" max="45" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Max Temp (°C)</label>
+                            <input class="form-control" type="number" name="MaxTemp" step="0.1" min="-10" max="55" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Humidity 9am (%)</label>
+                            <input class="form-control" type="number" name="Humidity9am" min="0" max="100" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Humidity 3pm (%)</label>
+                            <input class="form-control" type="number" name="Humidity3pm" min="0" max="100" required>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3 text-primary">Wind Information</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Wind Gust Direction</label>
+                            <select class="form-control" name="WindGustDir" required>
+                                <option value="N">North (N)</option>
+                                <option value="S">South (S)</option>
+                                <option value="E">East (E)</option>
+                                <option value="W">West (W)</option>
+                                <option value="NW">Northwest (NW)</option>
+                                <option value="SE">Southeast (SE)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Wind Dir 9am</label>
+                            <select class="form-control" name="WindDir9am" required>
+                                <option value="N">North (N)</option>
+                                <option value="S">South (S)</option>
+                                <option value="E">East (E)</option>
+                                <option value="W">West (W)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Wind Dir 3pm</label>
+                            <select class="form-control" name="WindDir3pm" required>
+                                <option value="N">North (N)</option>
+                                <option value="S">South (S)</option>
+                                <option value="E">East (E)</option>
+                                <option value="W">West (W)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Wind Gust Speed (km/h)</label>
+                            <input class="form-control" type="number" name="WindGustSpeed" min="0" max="150" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Wind Speed 9am (km/h)</label>
+                            <input class="form-control" type="number" name="WindSpeed9am" min="0" max="150" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Wind Speed 3pm (km/h)</label>
+                            <input class="form-control" type="number" name="WindSpeed3pm" min="0" max="150" required>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3 text-primary">Other Measurements</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label">Rainfall (mm)</label>
+                            <input class="form-control" type="number" name="Rainfall" step="0.1" min="0" max="400" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Evaporation (mm)</label>
+                            <input class="form-control" type="number" name="Evaporation" step="0.1" min="0" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Sunshine (Hours)</label>
+                            <input class="form-control" type="number" name="Sunshine" step="0.1" min="0" max="24" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Pressure 9am (hPa)</label>
+                            <input class="form-control" type="number" name="Pressure9am" step="0.1" min="900" max="1100" required>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label class="form-label">Pressure 3pm (hPa)</label>
+                            <input class="form-control" type="number" name="Pressure3pm" step="0.1" min="900" max="1100" required>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label class="form-label">Cloud 9am (Okta)</label>
+                            <input class="form-control" type="number" name="Cloud9am" min="0" max="9" required>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label class="form-label">Cloud 3pm (Okta)</label>
+                            <input class="form-control" type="number" name="Cloud3pm" min="0" max="9" required>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label class="form-label">Temp 9am (°C)</label>
+                            <input class="form-control" type="number" name="Temp9am" step="0.1" min="-10" max="50" required>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label class="form-label">Temp 3pm (°C)</label>
+                            <input class="form-control" type="number" name="Temp3pm" step="0.1" min="-10" max="55" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-lg" type="submit">Predict Rain</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
