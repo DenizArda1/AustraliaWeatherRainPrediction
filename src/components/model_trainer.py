@@ -10,6 +10,9 @@ from src.entity.config_entity import ModelTrainingConfig
 from sklearn.metrics import accuracy_score,classification_report
 from sklearn.model_selection import RandomizedSearchCV
 
+import mlflow
+import dagshub
+dagshub.init(repo_owner='DenizArda1', repo_name='AustraliaWeatherRainPrediction', mlflow=True)
 
 class ModelTrainer:
     def __init__(self,train_arr:np.ndarray,test_arr:np.ndarray):
@@ -27,11 +30,13 @@ class ModelTrainer:
 
         report = classification_report(self.y_test,y_test_preds)
         logging.info(f"Model: {model_name} | Training Accuracy: {acc_score_train} | Testing Accuracy: {acc_score_test}")
-        return acc_score_test
+        return acc_score_train,acc_score_test
 
     def initiate_model_trainer(self):
         logging.info("Training Model")
         try:
+            mlflow.set_experiment("AustraliaWeatherRainPredictionExperiment")
+
             models,param_grid = get_models_and_params()
             model_report: dict = {}
             for model_name, model in models.items():
@@ -41,10 +46,21 @@ class ModelTrainer:
                 rs.fit(self.X_train,self.y_train)
 
                 best_model = rs.best_estimator_
-                test_model_score = self.evaluate_model(best_model,model_name)
+                best_params = rs.best_params_
+
+                train_score, test_score = self.evaluate_model(best_model,model_name)
+                with mlflow.start_run(run_name=model_name):
+                    mlflow.log_params(best_params)
+                    mlflow.log_metric("train accuracy", train_score)
+                    mlflow.log_metric("test accuracy", test_score)
+                    mlflow.sklearn.log_model(
+                        sk_model=best_model,
+                        name="model",
+                    )
+
                 model_report[model_name] = {
                     "Model": best_model,
-                    "Score": test_model_score
+                    "Score": test_score
                 }
 
             best_model_name = max(model_report, key=lambda k: model_report[k]["Score"])

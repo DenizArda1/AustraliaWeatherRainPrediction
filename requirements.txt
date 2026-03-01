@@ -10,5 +10,7 @@ ipykernel
 xgboost
 flask
 gunicorn
+mlflow
+dagshub
 
 #-e .
