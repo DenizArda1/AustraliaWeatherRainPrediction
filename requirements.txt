@@ -9,5 +9,6 @@ pyyaml
 ipykernel
 xgboost
 flask
+gunicorn
 
 #-e .

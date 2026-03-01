@@ -2,3 +2,6 @@
 venv
 artifacts
 artifacts/
+AustraliaWeatherRainPrediction.egg-info
+AustraliaWeatherRainPrediction.egg-info/
+logs/
